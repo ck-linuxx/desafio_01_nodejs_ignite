@@ -76,7 +76,7 @@ app.put('/todos/:id', checksExistsUserAccount, (request, response) => {
   const todo = user.todos.find(todo => todo.id === id)
 
   if(!todo){
-    return response.status(404).json({error: "Todo not exists"})
+    return response.status(404).json({error: "Todo doesn`t exists"})
   }
 
   todo.title = title
@@ -87,11 +87,35 @@ app.put('/todos/:id', checksExistsUserAccount, (request, response) => {
 });
 
 app.patch('/todos/:id/done', checksExistsUserAccount, (request, response) => {
-  // Complete aqui
+  const {id} = request.params
+  const {user} = request
+
+  const todo = user.todos.find(todo => todo.id === id)
+
+  if(!todo){
+    return response.status(404).json({error: "Todo doesn`t exists"})
+  }
+
+  todo.done = true
+
+  return response.status(200).json(todo)
+
 });
 
 app.delete('/todos/:id', checksExistsUserAccount, (request, response) => {
-  // Complete aqui
+  const {id} = request.params
+  const {user} = request
+
+  const deleteTodoIndex = user.todos.findIndex(todo => todo.id === id)
+
+  if(deleteTodoIndex === -1){
+    return response.status(404).json({error: "Todo doesn`t"})
+  }
+
+  user.todos.splice(deleteTodoIndex, 1)
+
+  return response.status(204).send()
+
 });
 
 module.exports = app;
